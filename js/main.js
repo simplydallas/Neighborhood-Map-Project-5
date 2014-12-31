@@ -343,7 +343,7 @@ var viewModel = function(){
         new self.point('University of Central Oklahoma Jazz Lab', 35.649714, -97.479892, false, 'fun music'),
         new self.point('The Conservatory', 35.561115, -97.53154999999998, false, 'fun music'),
         new self.point('Hafer Park', 35.642291, -97.455715, false, 'fun park'),
-        new self.point('Pelican Bay Aquatic Center', 35.642946, -97.45958000000002, false, 'fun swimming'),
+        new self.point('Pelican Bay', 35.642946, -97.45958000000002, false, 'fun swimming'),
         new self.point('Edmond Historical Museum', 35.650082, -97.47843699999999, false, 'fun educational'),
         new self.point('Elevation Trampoline fun', 35.616732, -97.503334, false, 'fun active'),
         new self.point('Edmond Convention and Visitors Bureau', 35.643736, -97.459854, false, 'fun educational'),
