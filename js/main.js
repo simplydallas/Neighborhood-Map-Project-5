@@ -675,37 +675,37 @@ var viewModel = function(){
                 var venueId = venue.id;
 
                 var venueName = venue.name;
-                if (venueName !== null){
+                if (venueName !== null && venueName !== undefined){
                     self.the4Sstring = self.the4Sstring + 'name: ' +
                         venueName + '<br>';
                 }
                 /* phone number */
                 var phoneNum = venue.contact.formattedPhone;
-                if (phoneNum !== null){
+                if (phoneNum !== null && phoneNum !== undefined){
                     self.the4Sstring = self.the4Sstring + 'phone: ' +
                         phoneNum + '<br>';
                 }
                 /* twitter */
                 var twitterId = venue.contact.twitter;
-                if (twitterId !== null){
+                if (twitterId !== null && twitterId !== undefined){
                     self.the4Sstring = self.the4Sstring + 'twitter name: ' +
                         twitterId + '<br>';
                 }
                 /* address */
                 var address = venue.location.formattedAddress;
-                if (address !== null){
+                if (address !== null && address !== undefined){
                     self.the4Sstring = self.the4Sstring + 'address: ' +
                         address + '<br>';
                 }
                 /* category */
                 var category = venue.categories.shortName;
-                if (category !== null){
+                if (category !== null && category !== undefined){
                     self.the4Sstring = self.the4Sstring + 'category: ' +
                         category + '<br>';
                 }
                 /* checkins */
                 var checkinCount = venue.stats.checkinsCount;
-                if (checkinCount !== null){
+                if (checkinCount !== null && checkinCount !== undefined){
                     self.the4Sstring = self.the4Sstring + '# of checkins: ' +
                         checkinCount + '<br>';
                 }
