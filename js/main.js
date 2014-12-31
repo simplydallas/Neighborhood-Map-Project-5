@@ -15,13 +15,13 @@ var TheMap = function(){
         //draggable: false,
         //scrollwheel: false,
         panControl: false,
-        zoom: this.Zoom,
         disableDefaultUI: true,
         center: new google.maps.LatLng(35.67, -97.41),
         mapTypeId: google.maps.MapTypeId.ROADMAP
         };
 
-    this.map = new google.maps.Map(document.getElementById('map'), this.mapOptions);
+    this.map =
+        new google.maps.Map(document.getElementById('map'), this.mapOptions);
 
     this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(
         document.getElementById('searchui'));
@@ -38,7 +38,8 @@ var viewModel = function(){
     var self = this;
     /* how many items to show in filtered list max? */
     /* sets based on window height to always fit a clean amount (min 1) */
-    self.maxListNum = ko.observable(Math.max(1,Math.ceil(($(window).height() -150)/30)));
+    self.maxListNum =
+        ko.observable(Math.max(1,Math.ceil(($(window).height() -150)/30)));
     //is the list visible right now? 1 = on, 0 = false;
     self.listVisible = ko.observable(1);
     /* which point is the first one on our list page right now?
@@ -47,7 +48,7 @@ var viewModel = function(){
      */
     self.listPoint = ko.observable(1);
     /* object to hold our map instance */
-    self.theMap = new TheMap;
+    self.theMap = new TheMap();
     /* counter for our zIndex so each marker is unique
      * and we know our max expected z for the markers
      */
@@ -87,8 +88,9 @@ var viewModel = function(){
         /*check if we already pulled this point this session, and if so
          *use the string we stored instead of hitting the API again
          */
-        var storedContent = sessionStorage.getItem("infoKey" + self.currentPoint().name +
-        self.currentPoint().lat() + self.currentPoint().long());
+        var storedContent = sessionStorage.getItem("infoKey" +
+            self.currentPoint().name +
+            self.currentPoint().lat() + self.currentPoint().long());
 
         /* if we have stored data for the point, use it to on the infowindow */
         if (storedContent !== undefined && storedContent !== null){
@@ -99,7 +101,7 @@ var viewModel = function(){
         else {
             /*open a loading message in the infowindow while we grab api data*/
             self.infowindow.setContent('<div id="infoContent" ' +
-                'class="scrollFix">loading...</loding>')
+                'class="scrollFix">loading...</loding>');
             self.infowindow.open(self.theMap.map, point.marker);
             //this will also check pano and open the infowindow
             self.get4Sinfo(point);
@@ -130,7 +132,7 @@ var viewModel = function(){
      * this is used for dynamic CSS class assignment to list items
      * based on status of things like mouse hover and point selection
      * @param  {point object} thisPoint [the point we are checking CSS for]
-     * @return {string} [string that describes which CSS class to assign for KO]
+     * @return {string} [describes which CSS class to assign for KO]
      */
     this.getStyle = function(thisPoint){
         if (thisPoint === self.currentPoint()){
@@ -181,7 +183,9 @@ var viewModel = function(){
             point.hovered(false);
         }
             //console.log("moo left");
-            if (point.marker.getZIndex() > self.zNum && point !== self.currentPoint()) {
+            if (point.marker.getZIndex() > self.zNum && point !==
+                self.currentPoint()) {
+
                 point.marker.setZIndex(point.marker.getZIndex() - 5000);
             }
             if (self.currentPoint() === point) {
@@ -278,7 +282,7 @@ var viewModel = function(){
         google.maps.event.addListener(this.marker, 'mouseout', function() {
             self.mouseGone(this);
         }.bind(this));
-    }
+    };
 
 
 
@@ -287,86 +291,166 @@ var viewModel = function(){
      * actual interesting points anyway
      */
     self.points = ko.observableArray([
-        new self.point('Hideaway Pizza', 35.546227, -97.61032599999999, false, 'food pizza'),
-        new self.point('Joey\'s Pizzeria', 35.466202, -97.52439300000003, false, 'food pizza'),
-        new self.point('Hideaway Pizza', 35.476239, -97.514567, false, 'food pizza'),
-        new self.point('Hideaway Pizza', 35.539729, -97.52953100000002, false, 'food pizza'),
-        new self.point('Hideaway Pizza', 35.649681, -97.47960899999998, false, 'food pizza'),
-        new self.point('Cheezies Pizza', 35.652598, -97.45843400000001, false, 'food pizza'),
-        new self.point('Jo\'s Famous Pizza', 35.644579, -97.49548900000002, false, 'food pizza'),
-        new self.point('Pizza Palace', 35.499864, -97.56591600000002, false, 'food pizza'),
-        new self.point('Domino\'s Pizza', 35.610491, -97.58029699999997, false, 'food pizza'),
-        new self.point('Little Caesars', 35.63843, -97.55007, false, 'food pizza'),
-        new self.point('Papa John\'s Pizza', 35.55818, -97.63761, false, 'food pizza'),
-        new self.point('The Wedge Pizzeria', 35.468435, -97.50780299999997, false, 'food pizza'),
-        new self.point('CiCi\'s Pizza', 35.558815, -97.640715, false, 'food pizza'),
-        new self.point('All American Pizza', 35.560273, -97.639024, false, 'food pizza'),
-        new self.point('Hideaway Pizza', 35.608064, -97.62406499999997, false, 'food pizza'),
-        new self.point('Papa John\'s Pizza', 35.494303, -97.54961500000002, false, 'food pizza'),
-        new self.point('CiCi\'s Pizza', 35.494586, -97.600299, false, 'food pizza'),
-        new self.point('The Wedge Pizzeria', 35.519088, -97.53003999999999, false, 'food pizza'),
-        new self.point('Whole Foods Market', 35.534006, -97.53061600000001, false, 'shopping food'),
-        new self.point('Lake Hefner', 35.5660404, -97.575793, false, 'fun lake'),
-        new self.point('Edmond Dog Park', 35.622525, -97.47583600000002, false, 'fun dog park'),
-        new self.point('Spring Hill Park', 35.620661, -97.44971399999997, false, 'fun park'),
-        new self.point('Redlands Park', 35.614435, -97.54012599999999, false, 'fun park'),
-        new self.point('Anderson Park', 35.629342, -97.47549700000002, false, 'fun park'),
-        new self.point('Spring Creek Park', 35.624687, -97.399611, false, 'fun park'),
-        new self.point('Whispering Heights Park', 35.619093, -97.473637, false, 'fun park'),
-        new self.point('Arcadia Conservation Education Area', 35.625045, -97.382722, false, 'fun educational'),
-        new self.point('Brasswood Neighborhood Park', 35.621083, -97.53742499999998, false, 'fun park'),
-        new self.point('Mitch Park', 35.686246, -97.50091199999997, false, 'fun park'),
-        new self.point('Edmond funs & Park', 35.6835, -97.50709999999998, false, 'fun park'),
-        new self.point('Chitwood Park', 35.655204, -97.49393199999997, false, 'fun park'),
-        new self.point('Martin Nature Park', 35.605616, -97.60735499999998, false, 'fun park/educational'),
-        new self.point('Oklahoma City National Memorial & Museum', 35.472973, -97.51702999999998, false, 'fun educational'),
-        new self.point('Pied Piper Park', 35.572466, -97.53453999999999, false, 'fun park'),
-        new self.point('Kelly Park', 35.639366, -97.49731500000001, false, 'fun park'),
-        new self.point('Penn Square Mall', 35.524961, -97.54533000000004, false, 'shopping mall'),
-        new self.point('Quail Springs Mall', 35.613212, -97.558404, false, 'shopping mall'),
-        new self.point('Burlington Coat Factory', 35.536413, -97.56565, false, 'shopping bigbox'),
-        new self.point('JCPenney', 35.612567, -97.56006000000002, false, 'shopping bigbox'),
-        new self.point('Dillard\'s', 35.613828, -97.557547, false, 'shopping bigbox'),
-        new self.point('T.J.Maxx', 35.621778, -97.48278399999998, false, 'shopping bigbox'),
-        new self.point('Kohl\'s', 35.561426, -97.65184799999997, false, 'shopping bigbox'),
-        new self.point('Walmart Supercenter', 35.6382, -97.4246, false, 'shopping bigbox'),
-        new self.point('Finish Line', 35.612908, -97.557863, false, 'shopping sports'),
-        new self.point('Sam\'s Club', 35.559855, -97.65017499999999, false, 'shopping wholesale'),
-        new self.point('Savory Spice Shop', 35.515738, -97.529381, false, 'shopping food'),
-        new self.point('Macy\'s', 35.613726, -97.559236, false, 'shopping bigbox'),
-        new self.point('Hobby Lobby', 35.61244, -97.55268799999999, false, 'shopping crafts'),
-        new self.point('Zales', 35.6132, -97.55767600000001, false, 'shopping bigbox'),
-        new self.point('Bed Bath & Beyond', 35.650001, -97.45790999999997, false, 'shopping bigbox'),
-        new self.point('Gordmans', 35.530682, -97.567904, false, 'shopping bigbox'),
-        new self.point('Target Mobile', 35.524269, -97.563876, false, 'shopping bigbox'),
-        new self.point('Armstrong Auditorium', 35.729949, -97.45714199999998, false, 'fun music/culture'),
-        new self.point('University of Central Oklahoma Jazz Lab', 35.649714, -97.479892, false, 'fun music'),
-        new self.point('The Conservatory', 35.561115, -97.53154999999998, false, 'fun music'),
-        new self.point('Hafer Park', 35.642291, -97.455715, false, 'fun park'),
-        new self.point('Pelican Bay', 35.642946, -97.45958000000002, false, 'fun swimming'),
-        new self.point('Edmond Historical Museum', 35.650082, -97.47843699999999, false, 'fun educational'),
-        new self.point('Elevation Trampoline fun', 35.616732, -97.503334, false, 'fun active'),
-        new self.point('Edmond Convention and Visitors Bureau', 35.643736, -97.459854, false, 'fun educational'),
-        new self.point('Pinkitzel Cupcakes & Candy at Spring Creek', 35.638867, -97.46211, false, 'food sweets'),
-        new self.point('Pinkitzel Candy & Cupcakes Bricktown', 35.464802, -97.51278500000001, false, 'food sweets'),
-        new self.point('Arcadia Lake', 35.6315929, -97.386775, false, 'fun lake'),
-        new self.point('AMF', 35.621156, -97.47989000000001, false, 'fun bowling'),
-        new self.point('AMF', 35.492154, -97.60268100000002, false, 'fun bowling'),
-        new self.point('Heritage Lanes', 35.591863, -97.55061699999999, false, 'fun bowling'),
-        new self.point('Float OKC', 35.638265, -97.48769199999998, false, 'fun weird'),
-        new self.point('Harkins Theatres Bricktown 16', 35.462998, -97.50917600000002, false, 'fun movies'),
-        new self.point('Starplex Northpark 7', 35.591481, -97.56629599999997, false, 'fun movies'),
-        new self.point('AMC Quail Springs Mall 24', 35.6121, -97.558943, false, 'fun movies'),
-        new self.point('Cinemark Tinseltown', 35.531677, -97.48002400000001, false, 'fun movies'),
-        new self.point('Kickingbird Cinema', 35.667995, -97.46384699999999, false, 'fun movies'),
-        new self.point('B & B Theatres Windsor 10', 35.494874, -97.605369, false, 'fun movies'),
-        new self.point('Carpenter Square Theatre', 35.467567, -97.526071, false, 'fun movies'),
-        new self.point('Upstage Theatre & Performing', 35.667356, -97.49505299999998, false, 'fun movies'),
-        new self.point('AMC Penn Square 10', 35.525145, -97.54319800000002, false, 'fun movies'),
-        new self.point('Dickinson Theaters', 35.525222, -97.543451, false, 'fun movies'),
-        new self.point('Starplex Cinemas Northpark 7', 35.591465, -97.56607200000002, false, 'fun movies'),
-        new self.point('Movie Exchange', 35.535177, -97.56513100000001, false, 'fun movies'),
-        new self.point('Artistic Theater Crafts Inc', 35.46289, -97.457469, false, 'fun movies'),
+        new self.point('Hideaway Pizza', 35.546227,
+            -97.61032599999999, false, 'food pizza'),
+        new self.point('Joey\'s Pizzeria', 35.466202,
+            -97.52439300000003, false, 'food pizza'),
+        new self.point('Hideaway Pizza', 35.476239,
+            -97.514567, false, 'food pizza'),
+        new self.point('Hideaway Pizza', 35.539729,
+            -97.52953100000002, false, 'food pizza'),
+        new self.point('Hideaway Pizza', 35.649681,
+            -97.47960899999998, false, 'food pizza'),
+        new self.point('Cheezies Pizza', 35.652598,
+            -97.45843400000001, false, 'food pizza'),
+        new self.point('Jo\'s Famous Pizza', 35.644579,
+            -97.49548900000002, false, 'food pizza'),
+        new self.point('Pizza Palace', 35.499864,
+            -97.56591600000002, false, 'food pizza'),
+        new self.point('Domino\'s Pizza', 35.610491,
+            -97.58029699999997, false, 'food pizza'),
+        new self.point('Little Caesars', 35.63843,
+            -97.55007, false, 'food pizza'),
+        new self.point('Papa John\'s Pizza', 35.55818,
+            -97.63761, false, 'food pizza'),
+        new self.point('The Wedge Pizzeria', 35.468435,
+            -97.50780299999997, false, 'food pizza'),
+        new self.point('CiCi\'s Pizza', 35.558815,
+            -97.640715, false, 'food pizza'),
+        new self.point('All American Pizza', 35.560273,
+            -97.639024, false, 'food pizza'),
+        new self.point('Hideaway Pizza', 35.608064,
+            -97.62406499999997, false, 'food pizza'),
+        new self.point('Papa John\'s Pizza', 35.494303,
+            -97.54961500000002, false, 'food pizza'),
+        new self.point('CiCi\'s Pizza', 35.494586,
+            -97.600299, false, 'food pizza'),
+        new self.point('The Wedge Pizzeria', 35.519088,
+            -97.53003999999999, false, 'food pizza'),
+        new self.point('Whole Foods Market', 35.534006,
+            -97.53061600000001, false, 'shopping food'),
+        new self.point('Lake Hefner', 35.5660404,
+            -97.575793, false, 'fun lake'),
+        new self.point('Edmond Dog Park', 35.622525,
+            -97.47583600000002, false, 'fun dog park'),
+        new self.point('Spring Hill Park', 35.620661,
+            -97.44971399999997, false, 'fun park'),
+        new self.point('Redlands Park', 35.614435,
+            -97.54012599999999, false, 'fun park'),
+        new self.point('Anderson Park', 35.629342,
+            -97.47549700000002, false, 'fun park'),
+        new self.point('Spring Creek Park', 35.624687,
+            -97.399611, false, 'fun park'),
+        new self.point('Whispering Heights Park', 35.619093,
+            -97.473637, false, 'fun park'),
+        new self.point('Arcadia Conservation Education Area', 35.625045,
+            -97.382722, false, 'fun educational'),
+        new self.point('Brasswood Neighborhood Park', 35.621083,
+            -97.53742499999998, false, 'fun park'),
+        new self.point('Mitch Park', 35.686246,
+            -97.50091199999997, false, 'fun park'),
+        new self.point('Edmond funs & Park', 35.6835,
+            -97.50709999999998, false, 'fun park'),
+        new self.point('Chitwood Park', 35.655204,
+            -97.49393199999997, false, 'fun park'),
+        new self.point('Martin Nature Park', 35.605616,
+            -97.60735499999998, false, 'fun park/educational'),
+        new self.point('Oklahoma City National Memorial & Museum', 35.472973,
+            -97.51702999999998, false, 'fun educational'),
+        new self.point('Pied Piper Park', 35.572466,
+            -97.53453999999999, false, 'fun park'),
+        new self.point('Kelly Park', 35.639366,
+            -97.49731500000001, false, 'fun park'),
+        new self.point('Penn Square Mall', 35.524961,
+            -97.54533000000004, false, 'shopping mall'),
+        new self.point('Quail Springs Mall', 35.613212,
+            -97.558404, false, 'shopping mall'),
+        new self.point('Burlington Coat Factory', 35.536413,
+            -97.56565, false, 'shopping bigbox'),
+        new self.point('JCPenney', 35.612567,
+            -97.56006000000002, false, 'shopping bigbox'),
+        new self.point('Dillard\'s', 35.613828,
+            -97.557547, false, 'shopping bigbox'),
+        new self.point('T.J.Maxx', 35.621778,
+            -97.48278399999998, false, 'shopping bigbox'),
+        new self.point('Kohl\'s', 35.561426,
+            -97.65184799999997, false, 'shopping bigbox'),
+        new self.point('Walmart Supercenter', 35.6382,
+            -97.4246, false, 'shopping bigbox'),
+        new self.point('Finish Line', 35.612908,
+            -97.557863, false, 'shopping sports'),
+        new self.point('Sam\'s Club', 35.559855,
+            -97.65017499999999, false, 'shopping wholesale'),
+        new self.point('Savory Spice Shop', 35.515738,
+            -97.529381, false, 'shopping food'),
+        new self.point('Macy\'s', 35.613726,
+            -97.559236, false, 'shopping bigbox'),
+        new self.point('Hobby Lobby', 35.61244,
+            -97.55268799999999, false, 'shopping crafts'),
+        new self.point('Zales', 35.6132,
+            -97.55767600000001, false, 'shopping bigbox'),
+        new self.point('Bed Bath & Beyond', 35.650001,
+            -97.45790999999997, false, 'shopping bigbox'),
+        new self.point('Gordmans', 35.530682,
+            -97.567904, false, 'shopping bigbox'),
+        new self.point('Target Mobile', 35.524269,
+            -97.563876, false, 'shopping bigbox'),
+        new self.point('Armstrong Auditorium', 35.729949,
+            -97.45714199999998, false, 'fun music/culture'),
+        new self.point('University of Central Oklahoma Jazz Lab', 35.649714,
+            -97.479892, false, 'fun music'),
+        new self.point('The Conservatory', 35.561115,
+            -97.53154999999998, false, 'fun music'),
+        new self.point('Hafer Park', 35.642291,
+            -97.455715, false, 'fun park'),
+        new self.point('Pelican Bay', 35.642946,
+            -97.45958000000002, false, 'fun swimming'),
+        new self.point('Edmond Historical Museum', 35.650082,
+            -97.47843699999999, false, 'fun educational'),
+        new self.point('Elevation Trampoline fun', 35.616732,
+            -97.503334, false, 'fun active'),
+        new self.point('Edmond Convention and Visitors Bureau', 35.643736,
+            -97.459854, false, 'fun educational'),
+        new self.point('Pinkitzel Cupcakes & Candy at Spring Creek', 35.638867,
+            -97.46211, false, 'food sweets'),
+        new self.point('Pinkitzel Candy & Cupcakes Bricktown', 35.464802,
+            -97.51278500000001, false, 'food sweets'),
+        new self.point('Arcadia Lake', 35.6315929,
+            -97.386775, false, 'fun lake'),
+        new self.point('AMF', 35.621156,
+            -97.47989000000001, false, 'fun bowling'),
+        new self.point('AMF', 35.492154,
+            -97.60268100000002, false, 'fun bowling'),
+        new self.point('Heritage Lanes', 35.591863,
+            -97.55061699999999, false, 'fun bowling'),
+        new self.point('Float OKC', 35.638265,
+            -97.48769199999998, false, 'fun weird'),
+        new self.point('Harkins Theatres Bricktown 16', 35.462998,
+            -97.50917600000002, false, 'fun movies'),
+        new self.point('Starplex Northpark 7', 35.591481,
+            -97.56629599999997, false, 'fun movies'),
+        new self.point('AMC Quail Springs Mall 24', 35.6121,
+            -97.558943, false, 'fun movies'),
+        new self.point('Cinemark Tinseltown', 35.531677,
+            -97.48002400000001, false, 'fun movies'),
+        new self.point('Kickingbird Cinema', 35.667995,
+            -97.46384699999999, false, 'fun movies'),
+        new self.point('B & B Theatres Windsor 10', 35.494874,
+            -97.605369, false, 'fun movies'),
+        new self.point('Carpenter Square Theatre', 35.467567,
+            -97.526071, false, 'fun movies'),
+        new self.point('Upstage Theatre & Performing', 35.667356,
+            -97.49505299999998, false, 'fun movies'),
+        new self.point('AMC Penn Square 10', 35.525145,
+            -97.54319800000002, false, 'fun movies'),
+        new self.point('Dickinson Theaters', 35.525222,
+            -97.543451, false, 'fun movies'),
+        new self.point('Starplex Cinemas Northpark 7', 35.591465,
+            -97.56607200000002, false, 'fun movies'),
+        new self.point('Movie Exchange', 35.535177,
+            -97.56513100000001, false, 'fun movies'),
+        new self.point('Artistic Theater Crafts Inc', 35.46289,
+            -97.457469, false, 'fun movies'),
     ]);
 
     /* the point we currently have clicked/selected, if any */
@@ -380,19 +464,24 @@ var viewModel = function(){
     /* calculated array containing just the filtered results from points()*/
     self.shownPoints = ko.computed(function() {
         return ko.utils.arrayFilter(self.points(), function(point) {
-            //check either name only or name + category depending on user options
+            //check either name or name + category depending on user options
             if (self.searchCategoryCheck() === true){
-                return (self.pointFilter() === '*' || point.name.toLowerCase().indexOf(self.pointFilter().toLowerCase()) !== -1);
+                return (self.pointFilter() === '*' ||
+                    point.name.toLowerCase().indexOf(self.pointFilter().
+                        toLowerCase()) !== -1);
             }
             else{
-                return (self.pointFilter() === '*' || (point.name.toLowerCase().indexOf(self.pointFilter().toLowerCase()) !== -1 ||
-                    point.category.toLowerCase().indexOf(self.pointFilter().toLowerCase()) !== -1));
+                return (self.pointFilter() === '*' ||
+                    (point.name.toLowerCase().indexOf(self.pointFilter().
+                        toLowerCase()) !== -1 ||
+                    point.category.toLowerCase().indexOf(self.pointFilter().
+                        toLowerCase()) !== -1));
             }
-        })
+        });
     }, self);
 
     /* do some stuff if we change our shownPoints computed array */
-    self.shownPoints.subscribe(function(changes) {
+    self.shownPoints.subscribe(function() {
         /* if we change which points are intended to be shown
          * also go ahead and apply that to the actual visual markers
          */
@@ -411,22 +500,25 @@ var viewModel = function(){
      * current visible page
      */
     self.shownList = ko.computed(function(){
-        return self.shownPoints().slice(self.listPoint()-1, self.listPoint()-1 + self.maxListNum())
+        return self.shownPoints().slice(self.listPoint()-1,
+            self.listPoint()-1 + self.maxListNum());
     });
 
     /* computed for how many pages we have total based on number of items
      * and the current max size of our list based on window size
      */
     this.totalPages = ko.computed(function(){
-        return Math.max(1,Math.ceil( self.shownPoints().length/self.maxListNum() ));
+        return Math.max(1,Math.ceil(
+            self.shownPoints().length/self.maxListNum() ));
     });
 
     /* computed for displayed text of current page information
      * returns a string for current page, max page, and total items
      */
     this.pageText = ko.computed(function(){
-        return 'Current List Page: <strong>' + self.listPage() + '</strong> of <strong>' +
-                self.totalPages() + '</strong> (' + self.shownPoints().length + ' locations)';
+        return 'Current List Page: <strong>' + self.listPage() +
+            '</strong> of <strong>' + self.totalPages() +
+            '</strong> (' + self.shownPoints().length + ' locations)';
     });
 
     /* computed for the previous page text to show on our list controls
@@ -499,8 +591,10 @@ var viewModel = function(){
          * also ensure they have the right unhovered icon.  This is to
          * avoid hiding a hovered icon in it's hovered state
          */
-        for (var i = 0, pointsLen = self.points().length; i < pointsLen; i++) {
-            var thisPoint = self.points()[i]
+        var i;
+        var pointsLen = self.points().length;
+        for (i = 0; i < pointsLen; i++) {
+            var thisPoint = self.points()[i];
             thisPoint.marker.setVisible(false);
             thisPoint.hovered(false);
             /* set icons */
@@ -510,12 +604,12 @@ var viewModel = function(){
             else {
                 thisPoint.marker.setIcon(thisPoint.defaultIcon);
             }
-        };
+        }
         /* now show all markers that we actually want shown. */
         /*TODO: check speed comparing arrays vs hiding all + unhiding */
-        for (var i = 0, pointsLen = self.shownPoints().length; i < pointsLen; i++) {
+        for (i = 0; i < pointsLen; i++) {
             self.shownPoints()[i].marker.setVisible(true);
-        };
+        }
         /* assuming the user didn't turn it off, refit map to our new set of
          * visible markers
          */
@@ -532,12 +626,12 @@ var viewModel = function(){
 
         //we don't want to try to zoom into a single point or no point
         //so make sure we are showing at least 2 before fitting the map
-        var pointsLen = self.shownPoints().length
+        var pointsLen = self.shownPoints().length;
         if(pointsLen >= 2) {
             for (var i = 0; i < pointsLen; i++) {
                 // make the bounds big enough to fit this point
                 bounds.extend (self.shownPoints()[i].marker.position);
-            };
+            }
             // apply the new bounds to the map
             self.theMap.map.fitBounds(bounds);
         }
@@ -562,11 +656,11 @@ var viewModel = function(){
      */
     this.get4Sinfo = function(point){
         /* the foursquare api url */
-        var url =
-        'https://api.foursquare.com/v2/venues/search?client_id=' +
-        'NFLHHJ350PG5BFEFQB2AZY2CJ3TUCUYR3Q14QPL5L35JT4WR' +
-        '&client_secret=WDNBZ4J3BISX15CF1MYOBHBP2RUSF2YSRLVPZ3F4WZUYZGWR&v=20130815' +
-        '&ll=' + point.lat() + ',' + point.long() + '&query=\'' + point.name + '\'&limit=1'
+        var url = 'https://api.foursquare.com/v2/venues/search?client_id=' +
+            'NFLHHJ350PG5BFEFQB2AZY2CJ3TUCUYR3Q14QPL5L35JT4WR' +
+            '&client_secret=WDNBZ4J3BISX15CF1MYOBHBP2RUSF2YSRLVPZ3F' +
+            '4WZUYZGWR&v=20130815' + '&ll=' + point.lat() + ',' +
+            point.long() + '&query=\'' + point.name + '\'&limit=1';
 
         /* perform the actual jquery request and get json in return
          * then use that to build out an html string that will be used
@@ -576,38 +670,44 @@ var viewModel = function(){
             .done(function(response){
                 /* object */
                 self.the4Sstring = '<p>Foursquare info:<br>';
-                var venue = response.response.venues[0]
+                var venue = response.response.venues[0];
                 /* venue id */
                 var venueId = venue.id;
 
                 var venueName = venue.name;
-                if (venueName != null){
-                    self.the4Sstring = self.the4Sstring + 'name: ' + venueName + '<br>';
+                if (venueName !== null){
+                    self.the4Sstring = self.the4Sstring + 'name: ' +
+                        venueName + '<br>';
                 }
                 /* phone number */
                 var phoneNum = venue.contact.formattedPhone;
-                if (phoneNum != null){
-                    self.the4Sstring = self.the4Sstring + 'phone: ' + phoneNum + '<br>';
+                if (phoneNum !== null){
+                    self.the4Sstring = self.the4Sstring + 'phone: ' +
+                        phoneNum + '<br>';
                 }
                 /* twitter */
                 var twitterId = venue.contact.twitter;
-                if (twitterId != null){
-                    self.the4Sstring = self.the4Sstring + 'twitter name: ' + twitterId + '<br>';
+                if (twitterId !== null){
+                    self.the4Sstring = self.the4Sstring + 'twitter name: ' +
+                        twitterId + '<br>';
                 }
                 /* address */
                 var address = venue.location.formattedAddress;
-                if (address != null){
-                    self.the4Sstring = self.the4Sstring + 'address: ' + address + '<br>';
+                if (address !== null){
+                    self.the4Sstring = self.the4Sstring + 'address: ' +
+                        address + '<br>';
                 }
                 /* category */
                 var category = venue.categories.shortName;
-                if (category != null){
-                    self.the4Sstring = self.the4Sstring + 'category: ' + category + '<br>';
+                if (category !== null){
+                    self.the4Sstring = self.the4Sstring + 'category: ' +
+                        category + '<br>';
                 }
                 /* checkins */
                 var checkinCount = venue.stats.checkinsCount;
-                if (checkinCount != null){
-                    self.the4Sstring = self.the4Sstring + '# of checkins: ' + checkinCount + '<br>';
+                if (checkinCount !== null){
+                    self.the4Sstring = self.the4Sstring + '# of checkins: ' +
+                        checkinCount + '<br>';
                 }
                 /* tips */
                 var tipCount = venue.stats.tipCount;
@@ -615,7 +715,7 @@ var viewModel = function(){
                     self.get4Stips(venueId, point);
                 }
                 else{
-                    /* only do this if we have no tips.  Otherise let the 
+                    /* only do this if we have no tips.  Otherise let the
                      * tip function do it
                      */
                     self.the4Sstring = self.the4Sstring + '</p>';
@@ -639,10 +739,11 @@ var viewModel = function(){
      */
     this.get4Stips = function(venueId, point){
         /* the foursquare tips api url */
-        var url ='https://api.foursquare.com/v2/venues/' + venueId +
-        '/tips?client_id=NFLHHJ350PG5BFEFQB2AZY2CJ3TUCUYR3Q14QPL5L35JT4WR' +
-        '&client_secret=WDNBZ4J3BISX15CF1MYOBHBP2RUSF2YSRLVPZ3F4WZUYZGWR&v=20130815'
-        
+        var url ='https://api.foursquare.com/v2/venues/' + venueId + '/tips' +
+            '?client_id=NFLHHJ350PG5BFEFQB2AZY2CJ3TUCUYR3Q14QPL5L35JT4WR' +
+            '&client_secret=WDNBZ4J3BISX15CF1MYOBHBP2RUSF2YSRLVPZ3F4WZUYZGWR&' +
+            'v=20130815';
+
         /* perform the actual jquery request and get json in return
          * then use that to build out an html string that will be used
          * for the infowindow string as a substring
@@ -656,7 +757,7 @@ var viewModel = function(){
                 for(var i=0;i<tipCount;i++){
                     self.the4Sstring = self.the4Sstring + '<li>' +
                         response.response.tips.items[i].text + '</li>';
-                };
+                }
 
                 self.the4Sstring = self.the4Sstring + '</ul></p>';
                 /* now that we have info, open the infowindow with it */
@@ -671,8 +772,8 @@ var viewModel = function(){
     };
 
     /* sets the maps original bounds in case our initial refitMap doesn't work
-     * as expected or very quickly for some reason.  This mostly helps if points
-     * fail to load for some reason   
+     * as expected or very quickly for some reason.  This mostly helps if
+     * points fail to load for some reason
      */
     self.defaultBounds = new google.maps.LatLngBounds(
         new google.maps.LatLng(35.65, -97.7),
@@ -688,11 +789,11 @@ var viewModel = function(){
      */
     self.contentString = function(includePano){
         var retStr = '<div id="infoContent" class="scrollFix">' +
-            self.the4Sstring
+            self.the4Sstring;
         /* if there is a nearby panorama, include a div for it */
         if (includePano === true) {
             retStr = retStr +
-                '<div id="content" style="width:100%;height:200px;"></div>'
+                '<div id="content" style="width:100%;height:200px;"></div>';
         }
         retStr = retStr + '</div>';
         /* store the built html string for reuse later this session */
@@ -737,7 +838,7 @@ var viewModel = function(){
                 if (skipContent !== true) {
                     self.infowindow.setContent(self.contentString(true));
                 }
-                if (self.pano != null) {
+                if (self.pano !== null) {
                     self.pano.unbind("position");
                     self.pano.setVisible(false);
                 }
@@ -772,7 +873,7 @@ var viewModel = function(){
             self.pano.setVisible(false);
             self.pano = null;
         }
-    }
+    };
 
     /* event to handle when infowindow is closed via the little x icon */
     google.maps.event.addListener(self.infowindow, 'closeclick', function() {
@@ -809,4 +910,4 @@ var viewModel = function(){
  */
 $(function(){
     ko.applyBindings(new viewModel());
-})
+});
