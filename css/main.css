@@ -21,7 +21,7 @@ body {
 }
 
 /*this annoying class is an attempt to fix a bug with infowindow
-size calculation in google's map api along with setting a max wifth
+size calculation in google's map api along with setting a max width
 in the actual infowindow constructor this appears to work so far without
 cutting off longer lines of text*/
 .scrollFix {
@@ -42,8 +42,11 @@ cutting off longer lines of text*/
 
 /*this holds all of our search and list ui*/
 #searchui {
+  width: 400px;
   margin: 1% 0 0 2%;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  font-family: Roboto,Arial,sans-serif;
+  font-size: 11px;
 }
 
 .optionCheck span {
@@ -116,8 +119,7 @@ cutting off longer lines of text*/
     margin: 0px;
     background-color: #fff;
     padding: 0 11px 0 13px;
-    /*this width will set all of our search list ui*/
-    width: 400px;
+    width: 100%;
     font-size: 15px;
     font-weight: 300;
     text-overflow: ellipsis;
