@@ -1,0 +1,139 @@
+html,
+body {
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+    font: 16px/26px Helvetica, Helvetica Neue, Arial;
+}
+
+.hoveredListPoint {
+    color: blue;
+    font-size: 1.2em;
+}
+
+.currentListPoint {
+    color: green;
+}
+
+.hoveredCurrentListPoint {
+    color: green;
+    font-size: 1.2em;
+}
+
+/*this annoying class is an attempt to fix a bug with infowindow
+size calculation in google's map api along with setting a max wifth
+in the actual infowindow constructor this appears to work so far without
+cutting off longer lines of text*/
+.scrollFix {
+  line-height: 1.35;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+  min-width: 250px;
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+}
+
+/*this holds all of our search and list ui*/
+#searchui {
+  margin: 1% 0 0 2%;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.optionCheck span {
+  vertical-align: middle;
+}
+
+.optionCheck input {
+  margin-left: 5px;
+  vertical-align: middle;
+}
+
+#pointList {
+  background: rgba(255, 255, 255, 0.8);
+  margin: 0;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+#listControls {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.8);
+  margin: 0;
+  text-align: center;
+  padding: 0;
+}
+
+#prevPage {
+  border: 1px rgba(0, 0, 0, 0.1);
+  width: 15%;
+  padding: 0;
+  float: left;
+  margin: 0;
+  border-right-style: solid;
+}
+
+#pageNumText {
+  margin: 0;
+  width: 68%;
+  display: inline-block;
+  padding: 0;
+}
+
+#nextPage {
+  border: 1px rgba(0, 0, 0, 0.1);
+  padding: 0;
+  float: right;
+  width: 15%;
+  margin: 0;
+  border-left-style: solid;
+}
+
+#listRollup {
+  border: 1px rgba(0, 0, 0, 0.1);
+  position: relative;
+  height: 16px;
+  padding: 0;
+  border-top-style: solid;
+}
+
+#rollupImg {
+  position: absolute;
+  width: 16px;
+  top: 0;
+  left: 48%;
+  bottom: 0;
+  margin: auto;
+}
+
+/*this is the search-filter box */
+#searchbox {
+    margin: 0px;
+    background-color: #fff;
+    padding: 0 11px 0 13px;
+    /*this width will set all of our search list ui*/
+    width: 400px;
+    font-size: 15px;
+    font-weight: 300;
+    text-overflow: ellipsis;
+    border: 1px solid transparent;
+    border-radius: 2px 0 0 2px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    height: 32px;
+    outline: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+/*this is the search-filter box when in focus*/
+#searchbox:focus {
+    border-color: #4d90fe;
+    margin-left: -1px;
+    padding-left: 14px;  /* Regular padding-left + 1. */
+    width: 401px;
+}

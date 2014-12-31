@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>OKC/Edmond Map</title>
+        <meta name="OKC/Edmond Map" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- CSS links-->
+        <link rel="stylesheet" href="css/normalize.min.css">
+        <link rel="stylesheet" href="css/main.css">
+        <!-- JS links -->
+        <script src="js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
+        <link rel="shortcut icon" href="favicon.ico" />
+        <!-- load jquery with fallback.  CDN copy is commented out due to slow
+            local loading timeout in chrome.  Here to demonstrate CDN/local Fallback only-->
+        <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>-->
+        <script>
+            window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js">\x3C/script>')
+        </script>
+        <!-- google maps api call-->
+        <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+        <script src="js/vendor/knockout-3.2.0.js"></script>     
+        <script src="js/points.js"></script>
+        <script src="js/main.js"></script>
+
+    </head>
+    <body>
+        <!--the map element will be used here and fill 100% of the screen-->
+        <div id="map"></div> 
+        <!--this holds our entire listbox and search it will be added to map controls-->
+        <div id="searchui">
+            <!--is the checkbox options above the filter/search box-->
+            <div id="searchOptions" >
+                <label class="optionCheck"><input type="checkbox" id="refitFilterCheck" data-bind="checked: refitFilterCheck"><span>refit map on filter?</span></label>
+                <label class="optionCheck"><input type="checkbox" id="refitResizeCheck" data-bind="checked: refitResizeCheck"><span>refit map on window resize?</span></label>
+                <label class="optionCheck"><input type="checkbox" id="searchCategoryCheck" data-bind="checked: searchCategoryCheck"><span>search name only?</span></label>
+            </div>
+            <!--this is the filter/search box-->
+            <input id="searchbox" type="search" placeholder="Filter list here.  Try fun, food, shopping, or a name." data-bind="value: pointFilter, valueUpdate: 'keyup'" autocomplete="off">
+            <!--this is the points list-->
+            <ul id="pointList" data-bind="visible: listVisible, template: {name: 'pointsTemplate',foreach: shownList}">
+            </ul>
+            <!--this is the list controls such as next page and collaps-->
+            <div id="listControls">
+                <div id="pageControls" data-bind="visible: listVisible">
+                    <div id="prevPage" data-bind="click: changePage.bind($data,-1)">
+                        <strong data-bind="text: prevPageText"></strong>
+                    </div>
+                    <div id="pageNumText" data-bind="html: pageText"></div>
+                    <div id="nextPage" data-bind="click: changePage.bind($data,1)">
+                        <strong data-bind="text: nextPageText"></strong>
+                    </div>
+                </div>
+                <div id="listRollup" data-bind="click: toggleList">
+                    <img id="rollupImg" data-bind="attr:{src: rollupIconPath}" /> 
+                </div>
+            </div>
+            
+            
+        </div>
+
+        <!--this is a knockout template used for point list items-->
+        <script type="text/html" id="pointsTemplate">
+          <li data-bind="event: {mouseover: mouseHere, mouseleave: mouseGone}, click:selectPoint, css: getStyle($data)">
+            <strong data-bind="text: name"></strong> –
+            <span data-bind="text: '(' + category + ')'"></span>
+          </li>
+        </script>
+    
+    </body>
+</html>
