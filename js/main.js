@@ -54,6 +54,16 @@ var viewModel = function(){
      * of page so that point can remain consistent when list resizes
      */
     self.listPoint = ko.observable(1);
+
+    /* make sure the google map api loaded before we do any work */
+    if (typeof google !== 'object' || typeof google.maps !== 'object'){
+        console.log("error loading google maps api");
+        $('#searchbox').val("Error Loading Google Maps Api");
+        $('#searchbox').css({'background-color' : 'rgba(255,0,0,0.5)'});
+        //return early since we have no maps.  No point in doing much else.
+        return;
+    }
+
     /* object to hold our map instance */
     self.theMap = new TheMap();
     window.map = self.theMap.map;
@@ -76,7 +86,7 @@ var viewModel = function(){
     /* setting max width fixes nonsense autosizing issues with
      * whitespace wrapping in the infowindow constructor
      */
-    self.infoMaxWidth = Math.min(400,$(window).width());
+    self.infoMaxWidth = Math.min(400,$(window).width() * .9);
 
     /* this is currently unused but will remove a point
      * from our list completely (until refreshed).
@@ -129,8 +139,10 @@ var viewModel = function(){
             self.currentPoint().lat() + self.currentPoint().long());
 
         /* if we have stored data for the point, use it to on the infowindow */
-        if (storedContent !== undefined && storedContent !== null){
+        if (storedContent){
             self.infowindow.setContent(storedContent);
+            self.infowindow.open(self.theMap.map, point.marker);
+            self.infowindow.isOpen = true;
             self.checkPano(true);
         }
         else {
@@ -138,6 +150,7 @@ var viewModel = function(){
             self.infowindow.setContent('<div id="infoContent" ' +
                 'class="scrollFix">loading...</loding>');
             self.infowindow.open(self.theMap.map, point.marker);
+            self.infowindow.isOpen = true;
             //this will also check pano and open the infowindow
             self.get4Sinfo(point);
         }
@@ -521,8 +534,12 @@ var viewModel = function(){
          * also go ahead and apply that to the actual visual markers
          */
         self.toggleMarkers();
-        /* close our info window if we apply a new filter */
-        self.infowindow.close();
+        /* close our info window if we apply a new filter and it is open */
+        if (self.infowindow.isOpen === true){
+            self.infowindow.close();
+            self.infowindow.isOpen = false;
+            self.infoWindowClosed();
+        }
     });
 
     /* computed for what page of the list is the user on currently? */
@@ -658,7 +675,9 @@ var viewModel = function(){
         /* now show all markers that we actually want shown. */
         /*TODO: check speed comparing arrays vs hiding all + unhiding */
         for (i = 0; i < pointsLen; i++) {
-            self.shownPoints()[i].marker.setVisible(true);
+            /* make sure the point is defined before messing with it */
+            var thisPoint = self.shownPoints()[i];
+            if (thisPoint) {thisPoint.marker.setVisible(true);}
         }
         /* assuming the user didn't turn it off, refit map to our new set of
          * visible markers
@@ -771,7 +790,6 @@ var viewModel = function(){
                     self.the4Sstring = self.the4Sstring + '</p>';
                     /* now that we have info, open the infowindow with it */
                     self.checkPano();
-                    self.infowindow.open(self.theMap.map, point.marker);
                 }
             })
             .fail(function(){
@@ -812,11 +830,10 @@ var viewModel = function(){
                 self.the4Sstring = self.the4Sstring + '</ul></p>';
                 /* now that we have info, open the infowindow with it */
                 self.checkPano();
-                self.infowindow.open(self.theMap.map, point.marker);
             })
             .fail(function(){
                 /* close up the string we started in the get4Sinfo function */
-                self.the4Sstring = self.the4Sstring + '</p>';
+                self.the4Sstring = self.the4Sstring + ' Fouresquare failed</p>';
                 console.log("Fouresquare failed");
             });
     };
@@ -880,10 +897,9 @@ var viewModel = function(){
 
         //if we have a small screen, skip the panorama
         if ($(window).width() <= 800) {
-            console.log("tiny");
             if (skipContent !== true) {
                 self.infowindow.setContent(self.contentString(false));
-            }      
+            }
             /* early return and never check for pano if screen is small */
             return;
         }
@@ -934,7 +950,6 @@ var viewModel = function(){
         }
         /* if we have a small screen, show the list we probably hid */
         if ($('window').width() < 800) {
-            console.log("alsoTiny");
             self.toggleList(true);
         }
         /* refit our map to counter the offset from selecting a point*/
@@ -948,9 +963,13 @@ var viewModel = function(){
 
     /* event to close infowindow when clicking on the raw map area */
     google.maps.event.addListener(self.theMap.map, "click", function(){
-        self.infowindow.close();
-        self.infoWindowClosed();
+        if (self.infowindow.isOpen === true){
+            self.infowindow.close();
+            self.infowindow.isOpen = false;
+            self.infoWindowClosed();
+        }
     });
+
 
     /* event to rsize the map and list size when the browser window resizes */
     $(window).resize(function () {

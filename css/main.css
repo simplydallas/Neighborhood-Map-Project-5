@@ -25,12 +25,11 @@ size calculation in google's map api along with setting a max width
 in the actual infowindow constructor this appears to work so far without
 cutting off longer lines of text*/
 .scrollFix {
-  line-height: 1.35;
+  line-height: 1.35;*/
   overflow: hidden;
   padding: 0;
   margin: 0;
   min-width: 250px;
-  max-width: 90%
 }
 
 /* panorama div style */
@@ -47,7 +46,7 @@ cutting off longer lines of text*/
   top: 0;
 }
 
-/*this holds all of our search and list ui*/
+/* this holds all of our search and list ui*/
 #searchui {
   position: absolute;
   width: 95%;

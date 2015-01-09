@@ -21,13 +21,13 @@
         </script>
         <!-- google maps api call-->
         <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
-        <script src="js/vendor/knockout-3.2.0.js"></script>     
+        <script src="js/vendor/knockout-3.2.0.js"></script>
         <script src="js/main.js"></script>
 
     </head>
     <body>
         <!--the map element will be used here and fill 100% of the screen-->
-        <div id="map"></div> 
+        <div id="map"></div>
         <!--this holds our entire listbox and search it will be added to map controls-->
         <div id="searchui">
             <!--is the checkbox options above the filter/search box-->
@@ -53,11 +53,11 @@
                     </div>
                 </div>
                 <div id="listRollup" data-bind="click: toggleList">
-                    <img id="rollupImg" data-bind="attr:{src: rollupIconPath, alt: rollupText}" /> 
+                    <img id="rollupImg" data-bind="attr:{src: rollupIconPath, alt: rollupText}" />
                 </div>
             </div>
-            
-            
+
+
         </div>
 
         <!--this is a knockout template used for point list items-->
@@ -67,6 +67,6 @@
             <span data-bind="text: '(' + category + ')'"></span>
           </li>
         </script>
-    
+
     </body>
 </html>
