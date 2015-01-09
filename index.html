@@ -37,7 +37,7 @@
                 <label class="optionCheck"><input type="checkbox" id="searchCategoryCheck" data-bind="checked: searchCategoryCheck"><span>search name only?</span></label>
             </div>
             <!--this is the filter/search box-->
-            <input id="searchbox" type="search" placeholder="Filter list here.  Try fun, food, shopping, or a name." data-bind="value: pointFilter, valueUpdate: 'keyup'" autocomplete="off">
+            <input id="searchbox" type="search" placeholder="Filter list here.  Try fun, food, or shopping." data-bind="value: pointFilter, valueUpdate: 'keyup'" autocomplete="off">
             <!--this is the points list-->
             <ul id="pointList" data-bind="visible: listVisible, template: {name: 'pointsTemplate',foreach: shownList}">
             </ul>
