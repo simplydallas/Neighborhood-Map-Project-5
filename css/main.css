@@ -42,7 +42,8 @@ cutting off longer lines of text*/
 
 /*this holds all of our search and list ui*/
 #searchui {
-  width: 400px;
+  width: 95%;
+  max-width: 400px;
   margin: 1% 0 0 2%;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
   font-family: Roboto,Arial,sans-serif;
