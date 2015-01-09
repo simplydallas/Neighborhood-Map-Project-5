@@ -86,7 +86,7 @@ var viewModel = function(){
     /* setting max width fixes nonsense autosizing issues with
      * whitespace wrapping in the infowindow constructor
      */
-    self.infoMaxWidth = Math.min(400,$(window).width() * .9);
+    self.infoMaxWidth = Math.min(400,$(window).width() * .8);
 
     /* this is currently unused but will remove a point
      * from our list completely (until refreshed).
@@ -129,7 +129,7 @@ var viewModel = function(){
         /* center on the new point and tell it to offset */
         self.centerToPoint(point, true);
         /* if our screen is small, collapse the list so we can see the info */
-        if ($('window').width() < 800) {self.toggleList(false);}
+        if ($(window).width() < 800) {self.toggleList(false);}
         self.currentPoint(point);
         /*check if we already pulled this point this session, and if so
          *use the string we stored instead of hitting the API again
@@ -197,7 +197,6 @@ var viewModel = function(){
             //hovering over non selected point
             return 'hoveredListPoint';
         }
-
     };
 
     /**
@@ -949,7 +948,7 @@ var viewModel = function(){
             self.pano = null;
         }
         /* if we have a small screen, show the list we probably hid */
-        if ($('window').width() < 800) {
+        if ($(window).width() < 800) {
             self.toggleList(true);
         }
         /* refit our map to counter the offset from selecting a point*/
