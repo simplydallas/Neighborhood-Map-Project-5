@@ -13,6 +13,7 @@ This is a project for the Udacity front end nanodegree.  It is a neighborhood ma
 
 ## Notes
 
+* Screens smaller than 800px wide are treaded differently than large screens to help prevent blocking information with the list.  This includes autocallapse of the list, smaller infowindows, and no panorama on smaller screens.
 * Most points have a panorama or streetview nearby.  Those will open one in the infowindow if so.
 * Session storage is used, so information will only pull once per point until you close that tab.  This speeds up clicking a point again and reduces api calls.
 * This tool uses Knockout, jquery, and also includes modernizr in hopes of further cross browser support.  A modern browser is still recommended.
