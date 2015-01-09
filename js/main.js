@@ -89,17 +89,22 @@ var viewModel = function(){
      * of the map to leave a lot of room for the infowindow or
      * on large screens, just a little lower than center
      */
-    self.centerToPoint = function(point) {
-        var scale = Math.pow(2, self.theMap.map.getZoom());
-        var mapHeight = $(window).height();
-        var projection = self.theMap.map.getProjection();
-        var pixPosition = projection.fromLatLngToPoint(point.marker.position);
-        var pixPosNew = new google.maps.Point(
-            pixPosition.x,
-            pixPosition.y - (mapHeight * .45 / scale)
-        );
-        var posLatLngNew = projection.fromPointToLatLng(pixPosNew);
-        self.theMap.map.setCenter(posLatLngNew);
+    self.centerToPoint = function(point, offsetIt) {
+        if (offsetIt !== true) {
+            self.theMap.map.setCenter(point.marker.position);
+        }
+        else {
+            var scale = Math.pow(2, self.theMap.map.getZoom());
+            var mapHeight = $(window).height();
+            var projection = self.theMap.map.getProjection();
+            var pixPosition = projection.fromLatLngToPoint(point.marker.position);
+            var pixPosNew = new google.maps.Point(
+                pixPosition.x,
+                pixPosition.y - (mapHeight * .45 / scale)
+            );
+            var posLatLngNew = projection.fromPointToLatLng(pixPosNew);
+            self.theMap.map.setCenter(posLatLngNew);
+        }
     };
 
     /**
@@ -111,9 +116,10 @@ var viewModel = function(){
     self.selectPoint = function(point) {
         /* store the current point so we can still do things to it later */
         var oldPoint = self.currentPoint();
-        /* center on the new point */
-        self.centerToPoint(point);
-
+        /* center on the new point and tell it to offset */
+        self.centerToPoint(point, true);
+        /* if our screen is small, collapse the list so we can see the info */
+        if ($('window').width() < 800) {self.toggleList(false);}
         self.currentPoint(point);
         /*check if we already pulled this point this session, and if so
          *use the string we stored instead of hitting the API again
@@ -596,13 +602,28 @@ var viewModel = function(){
      * this is done by setting listVisible which is used in the knockout
      * data binds as a boolean for the visible binding
      */
-    self.toggleList = function(){
-        if(self.listVisible() === 0){
+    self.toggleList = function(makeVisible){
+        console.log(typeof makeVisible);
+        /* check if we sent a visible argument and if not, make one
+         * for some reason it feeds an object when it is left blank
+         * so we have to check if it is a boolean instead of undefined
+         */
+        if (typeof makeVisible !== 'boolean') {
+            if (self.listVisible() === 0) {
+                makeVisible = true;
+            }
+            else {
+                makeVisible = false;
+            }
+        }
+
+        /* change actual list now that we know if we are hiding or showing */
+        if(makeVisible === true){
             self.listVisible(1);
             self.rollupText('collapse list');
             self.rollupIconPath('img/collapseIcon.png');
         }
-        else{
+        else if (makeVisible === false){
             self.listVisible(0);
             self.rollupText('expand list');
             self.rollupIconPath('img/expandIcon.png');
@@ -911,6 +932,13 @@ var viewModel = function(){
             self.pano.setVisible(false);
             self.pano = null;
         }
+        /* if we have a small screen, show the list we probably hid */
+        if ($('window').width() < 800) {
+            console.log("alsoTiny");
+            self.toggleList(true);
+        }
+        /* refit our map to counter the offset from selecting a point*/
+        self.refitMap();
     };
 
     /* event to handle when infowindow is closed via the little x icon */
