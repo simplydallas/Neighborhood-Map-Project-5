@@ -43,7 +43,7 @@
             </ul>
             <!--this is the list controls such as next page and collaps-->
             <div id="listControls">
-                <div id="pageControls" data-bind="visible: listVisible">
+                <div id="pageControls" data-bind="display: listVisible">
                     <div id="prevPage" data-bind="click: changePage.bind($data,-1)">
                         <strong data-bind="text: prevPageText"></strong>
                     </div>
@@ -53,7 +53,7 @@
                     </div>
                 </div>
                 <div id="listRollup" data-bind="click: toggleList">
-                    <img id="rollupImg" data-bind="attr:{src: rollupIconPath}" /> 
+                    <img id="rollupImg" data-bind="attr:{src: rollupIconPath, alt: rollupText}" /> 
                 </div>
             </div>
             

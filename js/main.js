@@ -23,8 +23,8 @@ var TheMap = function(){
     this.map =
         new google.maps.Map(document.getElementById('map'), this.mapOptions);
 
-    this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(
-        document.getElementById('searchui'));
+     this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(
+         document.getElementById('searchui'));
 
 };
 
@@ -61,18 +61,37 @@ var viewModel = function(){
     self.searchCategoryCheck = ko.observable(false);
     /* is the list visible? */
     self.listVisible = ko.observable(true);
+    /* what is the alt text of our rollup icon? */
+    self.rollupText = ko.observable('collapse list');
     /* what is the source path of the collapse icon? */
     self.rollupIconPath = ko.observable('img/collapseIcon.png');
     /* setting max width fixes nonsense autosizing issues with
      * whitespace wrapping in the infowindow constructor
      */
-    self.infoMaxWidth = 400;
+    self.infoMaxWidth = Math.min(400,$(window).width());
 
     /* this is currently unused but will remove a point
      * from our list completely (until refreshed).
      */
-    this.removePoint = function(point) {
+    self.removePoint = function(point) {
         self.points.remove(point);
+    };
+
+    /* move map view so that the point is at the center bottom
+     * of the map to leave a lot of room for the infowindow or
+     * on large screens, just a little lower than center
+     */
+    self.centerToPoint = function(point) {
+        var scale = Math.pow(2, self.theMap.map.getZoom());
+        var mapHeight = $(window).height();
+        var projection = self.theMap.map.getProjection();
+        var pixPosition = projection.fromLatLngToPoint(point.marker.position);
+        var pixPosNew = new google.maps.Point(
+            pixPosition.x,
+            pixPosition.y - (mapHeight * .45 / scale)
+        );
+        var posLatLngNew = projection.fromPointToLatLng(pixPosNew);
+        self.theMap.map.setCenter(posLatLngNew);
     };
 
     /**
@@ -81,9 +100,12 @@ var viewModel = function(){
      * this happens when we select a point on map or list
      * @param  {point object} point [point we are selecting]
      */
-    this.selectPoint = function(point) {
+    self.selectPoint = function(point) {
         /* store the current point so we can still do things to it later */
         var oldPoint = self.currentPoint();
+        /* center on the new point */
+        self.centerToPoint(point);
+
         self.currentPoint(point);
         /*check if we already pulled this point this session, and if so
          *use the string we stored instead of hitting the API again
@@ -96,7 +118,6 @@ var viewModel = function(){
         if (storedContent !== undefined && storedContent !== null){
             self.infowindow.setContent(storedContent);
             self.checkPano(true);
-            self.infowindow.open(self.theMap.map, point.marker);
         }
         else {
             /*open a loading message in the infowindow while we grab api data*/
@@ -134,7 +155,7 @@ var viewModel = function(){
      * @param  {point object} thisPoint [the point we are checking CSS for]
      * @return {string} [describes which CSS class to assign for KO]
      */
-    this.getStyle = function(thisPoint){
+    self.getStyle = function(thisPoint){
         if (thisPoint === self.currentPoint()){
             if(thisPoint.hovered() === true) {
                 //hovering over selected point
@@ -157,7 +178,7 @@ var viewModel = function(){
      * it's marker or list item
      * @param  {point object} point [this is the point now hovered over]
      */
-    this.mouseHere = function(point) {
+    self.mouseHere = function(point) {
         if (point.hovered() !== true) {
             point.hovered(true);
             //console.log("moo here");
@@ -178,7 +199,7 @@ var viewModel = function(){
      * it's marker or list item
      * @param  {point object} point [this is the point no longer hovered over]
      */
-    this.mouseGone = function(point) {
+    self.mouseGone = function(point) {
         if (point.hovered() === true) {
             point.hovered(false);
         }
@@ -454,7 +475,7 @@ var viewModel = function(){
     ]);
 
     /* the point we currently have clicked/selected, if any */
-    this.currentPoint = ko.observable();
+    self.currentPoint = ko.observable();
 
     /* filter from our search box.
      * changing it will recalc shownPoints computed array.
@@ -507,7 +528,7 @@ var viewModel = function(){
     /* computed for how many pages we have total based on number of items
      * and the current max size of our list based on window size
      */
-    this.totalPages = ko.computed(function(){
+    self.totalPages = ko.computed(function(){
         return Math.max(1,Math.ceil(
             self.shownPoints().length/self.maxListNum() ));
     });
@@ -515,7 +536,7 @@ var viewModel = function(){
     /* computed for displayed text of current page information
      * returns a string for current page, max page, and total items
      */
-    this.pageText = ko.computed(function(){
+    self.pageText = ko.computed(function(){
         return 'Current List Page: <strong>' + self.listPage() +
             '</strong> of <strong>' + self.totalPages() +
             '</strong> (' + self.shownPoints().length + ' locations)';
@@ -526,7 +547,7 @@ var viewModel = function(){
      * because of page resize and rounding by resetting listPoint to 1
      * if we are on the first page
      */
-    this.prevPageText = ko.computed(function(){
+    self.prevPageText = ko.computed(function(){
         if (self.listPage() > 1){
             return 'page: ' + (self.listPage() - 1) + ' <' ;
         }
@@ -537,7 +558,7 @@ var viewModel = function(){
     });
 
     /* computed for the next page text to show on our list controls */
-    this.nextPageText = ko.computed(function(){
+    self.nextPageText = ko.computed(function(){
         if (self.totalPages() > self.listPage()){
             return '> page: ' + (self.listPage() + 1) ;
         }
@@ -553,7 +574,7 @@ var viewModel = function(){
      * It uses the current max page size to know which one to select for each
      * page change.
      */
-    this.changePage = function(direction){
+    self.changePage = function(direction){
         if(direction === 1 && self.totalPages() > self.listPage()){
             self.listPoint(self.listPoint()+self.maxListNum());
         }
@@ -567,7 +588,7 @@ var viewModel = function(){
      * this is done by setting listVisible which is used in the knockout
      * data binds as a boolean for the visible binding
      */
-    this.toggleList = function(){
+    self.toggleList = function(){
         if(self.listVisible() === 0){
             self.listVisible(1);
             self.rollupText('collapse list');
@@ -793,7 +814,7 @@ var viewModel = function(){
         /* if there is a nearby panorama, include a div for it */
         if (includePano === true) {
             retStr = retStr +
-                '<div id="content" style="width:100%;height:200px;"></div>';
+                '<div id="panoContent"></div>';
         }
         retStr = retStr + '</div>';
         /* store the built html string for reuse later this session */
@@ -828,6 +849,15 @@ var viewModel = function(){
      */
     self.checkPano = function(skipContent) {
 
+        //if we have a small screen, skip the panorama
+        if ($(window).width() <= 800) {
+            console.log("tiny");
+            if (skipContent !== true) {
+                self.infowindow.setContent(self.contentString(false));
+            }      
+            /* early return and never check for pano if screen is small */
+            return;
+        }
         //check if we have a streetview available nearby and use it
         self.streetViewService.getPanoramaByLocation(
             self.currentPoint().marker.position,80,
@@ -843,7 +873,7 @@ var viewModel = function(){
                     self.pano.setVisible(false);
                 }
                 self.pano = new google.maps.StreetViewPanorama(
-                    document.getElementById("content"), {
+                    document.getElementById("panoContent"), {
 
                     navigationControl: true,
                     navigationControlOptions: {

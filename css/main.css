@@ -32,6 +32,12 @@ cutting off longer lines of text*/
   min-width: 250px;
 }
 
+/* panorama div style */
+#panoContent {
+  width:100%;
+  height:200px;
+}
+
 #map {
   width: 100%;
   height: 100%;
@@ -44,6 +50,7 @@ cutting off longer lines of text*/
 #searchui {
   width: 95%;
   max-width: 400px;
+  min-width: 320px;
   margin: 1% 0 0 2%;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
   font-family: Roboto,Arial,sans-serif;
