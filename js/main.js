@@ -23,8 +23,13 @@ var TheMap = function(){
     this.map =
         new google.maps.Map(document.getElementById('map'), this.mapOptions);
 
-     this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(
-         document.getElementById('searchui'));
+     /* this adds the search ui as a control instead of a floating div
+      * it is unused at the moment because it messes with infowindows on mobile
+      * but it is left in as a comment so I can experiment with it more later
+      * easily
+      */
+     // this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(
+     //     document.getElementById('searchui'));
 
 };
 
@@ -36,6 +41,8 @@ var TheMap = function(){
 var viewModel = function(){
     /* scope alias */
     var self = this;
+    /* clear session storage any time we load */
+    sessionStorage.clear();
     /* how many items to show in filtered list max? */
     /* sets based on window height to always fit a clean amount (min 1) */
     self.maxListNum =
@@ -49,6 +56,7 @@ var viewModel = function(){
     self.listPoint = ko.observable(1);
     /* object to hold our map instance */
     self.theMap = new TheMap();
+    window.map = self.theMap.map;
     /* counter for our zIndex so each marker is unique
      * and we know our max expected z for the markers
      */

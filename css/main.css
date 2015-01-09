@@ -30,6 +30,7 @@ cutting off longer lines of text*/
   padding: 0;
   margin: 0;
   min-width: 250px;
+  max-width: 90%
 }
 
 /* panorama div style */
@@ -48,6 +49,7 @@ cutting off longer lines of text*/
 
 /*this holds all of our search and list ui*/
 #searchui {
+  position: absolute;
   width: 95%;
   max-width: 400px;
   min-width: 320px;
