@@ -87,6 +87,11 @@ var viewModel = function(){
      * whitespace wrapping in the infowindow constructor
      */
     self.infoMaxWidth = Math.min(400,$(window).width() * .8);
+    /* max number of 4square tips to collect.  Based somewhat on
+     * size of the user window width.  SHould range from 1 to 5.
+     */
+    self.max4Stips = Math.max( 1,
+        Math.min( 5, Math.floor( $(window).width() / 200 )));
 
     /* this is currently unused but will remove a point
      * from our list completely (until refreshed).
@@ -787,13 +792,16 @@ var viewModel = function(){
                      * tip function do it
                      */
                     self.the4Sstring = self.the4Sstring + '</p>';
-                    /* now that we have info, open the infowindow with it */
+                    /* now that we have info, update the infowindow with it */
                     self.checkPano();
                 }
             })
             .fail(function(){
-                self.the4Sstring = "Fouresquare data request failed";
-                console.log("Fouresquare failed");
+                self.the4Sstring = 'Fouresquare data request failed';
+                console.log('Fouresquare failed to load information' + 
+                    'attempting to load error  we can get into info window');
+                /* update the infowindow anyway */
+                self.checkPano();                
             });
 
     };
@@ -818,7 +826,8 @@ var viewModel = function(){
         $.getJSON(url)
             .done(function(response){
                 /* object */
-                var tipCount = Math.min(5,response.response.tips.count);
+                var tipCount = Math.min(self.max4Stips,
+                    response.response.tips.count);
                 /* tips */
                 self.the4Sstring = self.the4Sstring + '<br>tips: <ul>';
                 for(var i=0;i<tipCount;i++){
@@ -827,13 +836,16 @@ var viewModel = function(){
                 }
 
                 self.the4Sstring = self.the4Sstring + '</ul></p>';
-                /* now that we have info, open the infowindow with it */
+                /* now that we have info, update the infowindow with it */
                 self.checkPano();
             })
             .fail(function(){
                 /* close up the string we started in the get4Sinfo function */
-                self.the4Sstring = self.the4Sstring + ' Fouresquare failed</p>';
-                console.log("Fouresquare failed");
+                self.the4Sstring = self.the4Sstring + '</p>';
+                console.log('Fouresquare failed to loads tip information' + 
+                    ' attempting to load what we have into the infowindow');
+                /* update the infowindow anyway */
+                self.checkPano();
             });
     };
 
@@ -969,8 +981,23 @@ var viewModel = function(){
         }
     });
 
+    /* keep an event istener on our infowindow so we can easily close it 
+     * on small screens where it may block visibility
+     */
+    google.maps.event.addDomListener(self.infowindow, 'domready', function() {
+        $('#infoContent').click(function() {
+            /* close infowidow if we click anywhere at all while on a mobile 
+             * to prevent issues with infowindow taking up the screen on phones
+             */
+            if ($(window).width() <= 800 && self.infowindow.isOpen === true){
+                self.infowindow.close();
+                self.infowindow.isOpen = false;
+                self.infoWindowClosed();
+            }
+        });
+    });
 
-    /* event to rsize the map and list size when the browser window resizes */
+    /* event to resize the map and list size when the browser window resizes */
     $(window).resize(function () {
         /* change max number of list items to cleanly fit in
          * the new window height
