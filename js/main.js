@@ -982,7 +982,10 @@ var viewModel = function(){
     });
 
     /* keep an event istener on our infowindow so we can easily close it 
-     * on small screens where it may block visibility
+     * on small screens where it may block visibility.  Similar to jQuery live
+     * listener but this should wait for the infowindow to complete showing
+     * first so it is a tiny bit less likely to close info before the user
+     * is able to see it.
      */
     google.maps.event.addDomListener(self.infowindow, 'domready', function() {
         $('#infoContent').click(function() {
