@@ -25,7 +25,7 @@ size calculation in google's map api along with setting a max width
 in the actual infowindow constructor this appears to work so far without
 cutting off longer lines of text*/
 .scrollFix {
-  line-height: 1.35;*/
+  line-height: 1.35;
   overflow: hidden;
   padding: 0;
   margin: 0;
